@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.auru.model.EventDetails;
@@ -58,15 +62,61 @@ public class EventImpl implements Event
 	}
 
 	@Override
-	public String searchEventbyDate(String Date) {
+	public List<EventDetails> searchEventbyDate(String fromDate , String toDate) {
 		// TODO Auto-generated method stub
-		return null;
+		System.out.println(fromDate+","+toDate);
+		//EventDetails enDv = new EventDetails();
+		String Query  ="SELECT EVENTID,EVENTNAME,EVENTDATE,EVENTTYPE,BASE64FILE,WEBLINK FROM AURUEVENT WHERE EVENTDATE BETWEEN '"+fromDate+"' AND '"+toDate+"'";
+		System.out.println("Query = "+Query);
+
+		List<EventDetails> mquery = jdbctemp.query(Query,new RowMapper<EventDetails>()
+				{
+
+					@Override
+					public EventDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+						// TODO Auto-generated method stub
+						System.out.println("rs = "+rs.getInt("EVENTID"));
+						EventDetails enDv = new EventDetails();
+
+						enDv.setEventId(rs.getInt("EVENTID"));
+						enDv.setEventName(rs.getNString("EVENTNAME"));
+						enDv.setEventDate(rs.getDate("EVENTDATE"));
+						enDv.setEventType(rs.getNString("EVENTTYPE"));
+						enDv.setBase64File(rs.getNString("BASE64FILE"));
+						enDv.setWeblink(rs.getNString("WEBLINK"));
+						return enDv;
+					}
+			
+				});
+		
+		return mquery;
 	}
 
+
+
 	@Override
-	public String searchAllEvent() {
+	public EventDetails searchByName(String eventName) {
 		// TODO Auto-generated method stub
-		return null;
+		EventDetails enDv = new EventDetails();
+		String Query  ="SELECT EVENTID,EVENTNAME,EVENTDATE,EVENTTYPE,BASE64FILE,WEBLINK FROM AURUEVENT WHERE EVENTNAME = ? ";
+		List<EventDetails> mquery = jdbctemp.query(Query,new RowMapper<EventDetails>()
+				{
+
+					@Override
+					public EventDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+						// TODO Auto-generated method stub
+						enDv.setEventId(rs.getInt("EVENTID"));
+						enDv.setEventName(rs.getNString("EVENTNAME"));
+						enDv.setEventDate(rs.getDate("EVENTDATE"));
+						enDv.setEventType(rs.getNString("EVENTTYPE"));
+						enDv.setBase64File(rs.getNString("BASE64FILE"));
+						enDv.setWeblink(rs.getNString("WEBLINK"));
+						return enDv;
+					}
+			
+				},eventName);
+		
+		return enDv;
 	}
 
 }
