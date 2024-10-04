@@ -4,12 +4,14 @@ import java.sql.Date;
 
 import javax.validation.Valid;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class EventDetails 
 {
 	@Valid
+	
 	@NotNull(message =" eventId cannot be null")
 	public int eventId;
 	

@@ -16,6 +16,7 @@ public class AuruProjectMain implements CommandLineRunner {
 		SpringApplication.run(AuruProjectMain.class, args);
 		System.out.println("Main method called");	
 		
+		
 	}
 
 	@Override
